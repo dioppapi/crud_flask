@@ -1,0 +1,107 @@
+<!-- templates/liste.html - Version Noir & Bleu -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des produits</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div class="icon"><i class="fas fa-box"></i></div>
+                <h1>Gestion du <span>Patisserie</span></h1>
+            </div>
+            <div class="header-right">
+                <div class="info-line"><strong><i class="fas fa-user"></i></strong> Mamadou Diop</div>
+                <div class="info-line"><strong><i class="fas fa-id-card"></i></strong> L1 Informatique</div>
+            </div>
+        </div>
+        
+        <a href="{{ url_for('ajouter') }}" class="btn-add">
+            <i class="fas fa-plus"></i> Ajouter un produit
+        </a>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag"></i> ID</th>
+                        <th><i class="fas fa-tag"></i> Produit</th>
+                        <th><i class="fas fa-money-bill-wave"></i> Prix</th>
+                        <th><i class="fas fa-cubes"></i> Quantité</th>
+                        <th><i class="fas fa-folder"></i> Catégorie</th>
+                        <th><i class="fas fa-cog"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if produits %}
+                        {% for produit in produits %}
+                        <tr>
+                            <td><strong>#{{ produit.id }}</strong></td>
+                            <td>{{ produit.nom }}</td>
+                            <td>{{ "%.2f"|format(produit.prix) }} MRU</td>
+                            <td>{{ produit.quantite }}</td>
+                            <td>{{ produit.categorie or '-' }}</td>
+                            <td>
+                                <div class="actions">
+                                    <a href="{{ url_for('modifier', id_produit=produit.id) }}" class="btn-modifier">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    <button onclick="confirmerSuppression('{{ produit.id }}')" class="btn-supprimer">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                    <form id="form-supprimer-{{ produit.id }}" method="POST" action="{{ url_for('supprimer', id_produit=produit.id) }}"></form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="empty">Aucun produit trouvé</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Informations Noir & Bleu -->
+        <div class="info-db">
+            <div class="info-content">
+                <div class="info-item">
+                    <span class="icon"><i class="fas fa-user-graduate"></i></span>
+                    <span class="label">Étudiant :</span>
+                    <span class="value">Mamadou Diop</span>
+                </div>
+                <div class="info-item">
+                    <span class="icon"><i class="fas fa-book"></i></span>
+                    <span class="label">Classe :</span>
+                    <span class="value">L1 Informatique</span>
+                </div>
+                <div class="info-item">
+                    <span class="icon"><i class="fas fa-graduation-cap"></i></span>
+                    <span class="label">Numéro :</span>
+                    <span class="value">44894357</span>
+                </div>
+            </div>
+            <div class="info-db-bottom">
+                <span><i class="fas fa-database"></i> Base de données : MySQL (WampServer)</span>
+                <span><i class="fas fa-table"></i> Table : produits</span>
+                <span><i class="fas fa-calendar-alt"></i> Année 2025-2026</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
